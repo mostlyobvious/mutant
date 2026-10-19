@@ -1,5 +1,11 @@
 # unreleased
 
+* Skip `it` block mutations whose only `it` reads a local variable. Mutating
+  `foo { it; it = 1; it }` emitted `foo { it = 1; it }`, and mutating
+  `foo { it; class Bar; it = 1; it; end }` emitted
+  `foo { class Bar; it = 1; it; end }`. Neither is an `it` block any more, so
+  `mutant util mutation` reported them as invalid, and a run discarded them.
+
 * Fix a crash on pattern matching and `**nil` parameters. Mutating a block
   without parameters whose body used either, such as `foo { x in {a: 1} }`,
   raised `KeyError: key not found: :match_pattern_p`. The same error stopped
