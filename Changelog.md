@@ -1,5 +1,10 @@
 # unreleased
 
+* Delete statements that pass a block with parameters. Mutating
+  `foo { |x| x }; bar` kept `foo { |x| x }` in every mutation, because
+  mutant took the block parameter `x` for a local variable it must keep. It
+  now also emits `bar`.
+
 * Keep pattern matches that bind local variables. Mutating
   `h => { a: }; a.upcase` emitted `a.upcase` alone, and `x in { a: }; a`
   emitted `false; a`. Both read an undefined `a`, so `mutant util mutation`

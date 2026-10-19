@@ -193,3 +193,51 @@ Mutant::Meta::Example.add :begin do
   mutation 'foo in { a: }; nil'
   mutation 'foo in { a: }'
 end
+
+Mutant::Meta::Example.add :begin do
+  source 'foo { |x| x }; bar'
+
+  mutation 'nil; bar'
+  mutation 'foo; bar'
+  mutation 'foo { |x| }; bar'
+  mutation 'foo { |x| raise }; bar'
+  mutation 'foo { |x| nil }; bar'
+  mutation 'bar'
+  mutation 'foo { |x| x }; nil'
+  mutation 'foo { |x| x }'
+end
+
+Mutant::Meta::Example.add :begin do
+  source 'foo { a = _1 }; bar'
+
+  mutation 'nil; bar'
+  mutation 'bar'
+  mutation 'foo { a = _1 }; nil'
+  mutation 'foo { a = _1 }'
+end
+
+Mutant::Meta::Example.add :begin do
+  source 'foo(a = 1) {}; bar'
+
+  mutation 'nil; bar'
+  mutation 'foo(a = 1); bar'
+  mutation 'foo {}; bar'
+  mutation 'foo(a = nil) {}; bar'
+  mutation 'foo(a = 0) {}; bar'
+  mutation 'foo(a = 2) {}; bar'
+  mutation 'foo(a = 167) {}; bar'
+  mutation 'foo(a = 1) { raise }; bar'
+  mutation 'foo(a = 1) {}; nil'
+  mutation 'foo(a = 1) {}'
+end
+
+if RUBY_VERSION > '3.4.0'
+  Mutant::Meta::Example.add :begin do
+    source 'foo { a = it }; bar'
+
+    mutation 'nil; bar'
+    mutation 'bar'
+    mutation 'foo { a = it }; nil'
+    mutation 'foo { a = it }'
+  end
+end

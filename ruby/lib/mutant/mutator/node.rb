@@ -16,6 +16,8 @@ module Mutant
 
       REGISTRY = Registry.new(->(_) { Node::Generic })
 
+      BLOCK_TYPES = %i[block numblock itblock].to_set.freeze
+
       # Lookup and invoke dedicated AST mutator
       #
       # @param input [Parser::AST::Node]
@@ -144,10 +146,14 @@ module Mutant
         when *Unparser::AST::RESET_NODES
           false
         else
-          node.children.any? do |child|
+          enclosing_scope_children(node).any? do |child|
             child.instance_of?(::Parser::AST::Node) && contains_lvar_assignment?(child)
           end
         end
+      end
+
+      def enclosing_scope_children(node)
+        BLOCK_TYPES.include?(node.type) ? node.children.take(1) : node.children
       end
     end # Node
   end # Mutator
