@@ -18,7 +18,7 @@ module Mutant
       private
 
         def dispatch
-          emit_singletons unless left_lvasgn?
+          emit_singletons unless left_assigns_lvar?
           emit_promotions
           emit_operator_swap
 
@@ -35,11 +35,11 @@ module Mutant
 
         def emit_promotions
           emit(left)
-          emit(right) unless left_lvasgn?
+          emit(right) unless left_assigns_lvar?
         end
 
-        def left_lvasgn?
-          n_lvasgn?(left)
+        def left_assigns_lvar?
+          contains_lvar_assignment?(left)
         end
 
       end # Binary

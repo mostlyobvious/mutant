@@ -82,3 +82,18 @@ Mutant::Meta::Example.add :if do
   mutation 'return nil'
   mutation 'if true; true; else; false; end'
 end
+
+Mutant::Meta::Example.add :if do
+  source 'if (a = b); 1; else a; end'
+
+  singleton_mutations
+  mutation 'if (a = nil); 1; else a; end'
+  mutation 'if (a = b); a; end'
+  mutation 'if (a = b); nil; else a; end'
+  mutation 'if (a = b); 0; else a; end'
+  mutation 'if (a = b); 2; else a; end'
+  mutation 'if (a = b); 167; else a; end'
+  mutation 'if (a = b); 1; end'
+  mutation 'if (a = b); 1; else nil; end'
+  mutation 'unless (a = b); a; end'
+end

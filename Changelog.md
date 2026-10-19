@@ -1,5 +1,11 @@
 # unreleased
 
+* Keep local variable assignments in `if` conditions and on the left of `&&`
+  and `||`. Mutating `if (a = b) then a end` emitted `a` alone, and
+  `(a = b) && a` emitted `a` too. Both read an undefined `a`, so
+  `mutant util mutation` reported a Mutation-Generation-Error, and a run
+  discarded them.
+
 * Delete statements that pass a block with parameters. Mutating
   `foo { |x| x }; bar` kept `foo { |x| x }` in every mutation, because
   mutant took the block parameter `x` for a local variable it must keep. It

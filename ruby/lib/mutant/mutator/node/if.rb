@@ -22,6 +22,8 @@ module Mutant
 
         def mutate_condition
           emit_condition_mutations
+          return if condition_assigns_lvar?
+
           emit_type(N_TRUE,  if_branch, else_branch)
           emit_type(N_FALSE, if_branch, else_branch)
         end
@@ -29,20 +31,24 @@ module Mutant
         def mutate_if_branch
           emit_type(condition, else_branch, nil) if else_branch
           return unless if_branch
-          emit(if_branch)
+          emit(if_branch) unless condition_assigns_lvar?
           emit_if_branch_mutations
           emit_type(condition, if_branch, nil)
         end
 
         def mutate_else_branch
           return unless else_branch
-          emit(else_branch)
+          emit(else_branch) unless condition_assigns_lvar?
           emit_else_branch_mutations
           emit_type(condition, nil, else_branch)
         end
 
         def emit_type(_condition, if_branch, else_branch)
           super unless ternary? && (if_branch.nil? || else_branch.nil?)
+        end
+
+        def condition_assigns_lvar?
+          contains_lvar_assignment?(condition)
         end
 
         def ternary?
